@@ -12,8 +12,8 @@ public class MsgPetHangUp {
 	public static void main(String[] args) {
 
 		new CSMessage(16519, "GetPetHangUpInfo")
-		.addComment("获取宠物挂机数据")
-		.print()
+		.comment("获取宠物挂机数据")
+		.end()
 		
 		.createSCResult()
 		
@@ -28,18 +28,18 @@ public class MsgPetHangUp {
 		.addOptional(Type.BOOL, "accelerate")
 		.addOptional(Type.BOOL, "finish")
 		.addOptional(Type.LONG, "duration")
-		.println()
+		.endln()
 		
 		.createCS("GainPetHangUp")
-		.addComment("获取宠物挂机经验")
-		.print()
+		.comment("获取宠物挂机经验")
+		.end()
 		
 		.createSCResult()
 		.add(Type.INT, "result")
 		.addOptional(Type.LONG, "exp")
 		.addRepeated(Type.create("DRewardItem"), "items")
 		
-		.println()
+		.endln()
 		
 		// 独立结构，不是协议
 //		.create("DRewardItem")

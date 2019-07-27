@@ -14,7 +14,7 @@ public class Message {
 	
 	public static final String STR_OPTION = "	option (msgid) = %d;\n";
 	
-	public static final String STR_FIELD = "	%s %s %s = %d;\n";
+	public static final String STR_FIELD = "	%s %s %s = %d;%s\n";
 	
 	private String comment = "";
 	private final int msgId;
@@ -69,7 +69,7 @@ public class Message {
 		return new SCMessageResult(this.msgId + 1, baseName);
 	}
 	
-	public Message addComment(String comment) {
+	public Message comment(String comment) {
 		this.comment = comment;
 		return this;
 	}
@@ -79,27 +79,56 @@ public class Message {
 		return this;
 	}
 	
-	public Message add(Type type, String name) {
-		protoFields.add(Field.make(type, name));
+	public Message add(Type type, String name, Object ...args) {
+		Field field = Field.make(type, name);
+		
+		for (int i=0; i<args.length; ++i) {
+			Object object = args[i];
+			if (object instanceof String) {
+				field.comment((String)object);
+			} else if (object instanceof ELimitType) {
+				field.limitType((ELimitType)object);
+			}
+		}
+		
+		protoFields.add(field);
+		
 		return this;
 	}
 	
-	public Message add(Type type, String name, ELimitType eLimitType) {
-		protoFields.add(Field.make(type, name, eLimitType));
+	public Message addOptional(Type type, String name, Object ...args) {
+		Field field = Field.make(type, name, ELimitType.OPTIONAL);
+		
+		for (int i=0; i<args.length; ++i) {
+			Object object = args[i];
+			if (object instanceof String) {
+				field.comment((String)object);
+			} else if (object instanceof ELimitType) {
+				field.limitType((ELimitType)object);
+			}
+		}
+		
+		protoFields.add(field);
+		
 		return this;
 	}
 	
-	public Message addOptional(Type type, String name) {
-		protoFields.add(Field.make(type, name, ELimitType.OPTIONAL));
+	public Message addRepeated(Type type, String name, Object ...args) {
+		Field field = Field.make(type, name, ELimitType.REPEATED);
+				
+		for (int i=0; i<args.length; ++i) {
+			Object object = args[i];
+			if (object instanceof String) {
+				field.comment((String)object);
+			} else if (object instanceof ELimitType) {
+				field.limitType((ELimitType)object);
+			}
+		}
+
 		return this;
 	}
 	
-	public Message addRepeated(Type type, String name) {
-		protoFields.add(Field.make(type, name, ELimitType.REPEATED));
-		return this;
-	}
-	
-	public String genProto() {
+	private String genProto() {
 		String outComment = "";
 		
 		if (comment.length() > 0) {
@@ -124,7 +153,8 @@ public class Message {
 		
 		int number = 0;
 		for (Field field : protoFields) {
-			String outStrField = String.format(STR_FIELD, field.getOptional(), field.getType(), field.getName(), ++number);
+			String outStrField = String.format(STR_FIELD, field.getOptional(), 
+					field.getType(), field.getName(), ++number, field.getComment());
 			
 			outStrFields += outStrField;
 		}
@@ -132,12 +162,12 @@ public class Message {
 		return outStrFields;
 	}
 
-	public Message print() {
+	public Message end() {
 		System.out.print(genProto());
 		return this;
 	}
 	
-	public Message println() {
+	public Message endln() {
 		System.out.print(genProto());
 		System.out.print("\n");
 		return this;
