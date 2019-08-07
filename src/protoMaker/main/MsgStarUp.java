@@ -16,7 +16,6 @@ public class MsgStarUp {
 		.comment("升星")
 		.add(Type.LONG, "equipmentId")
 		.add(Type.INT, "tarItemSn", "目标装备sn")
-		.end()
 		
 		.createSCResult()
 		.add(Type.INT, "result")
@@ -25,8 +24,8 @@ public class MsgStarUp {
 		.createCS("AttachEvil")
 		.comment("附魔")
 		.add(Type.LONG, "equipmentId")
+		.add(Type.INT, "star", "洗练目标星级属性")
 		.addRepeated(Type.LONG, "costItemIds")
-		.end()
 		
 		.createSCResult()
 		.add(Type.INT, "result")

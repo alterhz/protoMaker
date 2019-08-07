@@ -1,6 +1,7 @@
 package protoMaker.main;
 
 import protoMaker.core.CSMessage;
+import protoMaker.core.Region;
 import protoMaker.core.Type;
 
 public class MsgPetHangUp {
@@ -11,9 +12,11 @@ public class MsgPetHangUp {
 
 	public static void main(String[] args) {
 
+		Region regin = new Region("魔宠乐园");
+		regin.beginln();
+		
 		new CSMessage(16519, "GetPetHangUpInfo")
 		.comment("获取宠物挂机数据")
-		.end()
 		
 		.createSCResult()
 		
@@ -32,12 +35,15 @@ public class MsgPetHangUp {
 		
 		.createCS("GainPetHangUp")
 		.comment("获取宠物挂机经验")
-		.end()
 		
 		.createSCResult()
 		.add(Type.INT, "result")
 		.addOptional(Type.LONG, "exp")
 		.addRepeated(Type.create("DRewardItem"), "items")
+		.endln()
+		
+		.createSC("BuildingNotWorking")
+		.comment("建筑不在工作状态")
 		
 		.endln()
 		
@@ -48,8 +54,9 @@ public class MsgPetHangUp {
 //		.add(Type.INT, "num")
 //		.println()
 		
-		
 		;
+		
+		regin.end();
 
 	}
 }

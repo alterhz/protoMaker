@@ -1,6 +1,7 @@
 package protoMaker.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Message {
@@ -22,6 +23,9 @@ public class Message {
 	private final String msgName;
 	private List<Field> protoFields = new ArrayList<>();
 	
+	/** 空行数量*/
+	private int endlnCount = 0;
+	
 	public Message(String baseName) {
 		this.msgId = 0;
 		this.baseName = baseName;
@@ -42,30 +46,37 @@ public class Message {
 	}
 	
 	public Message create(String baseName) {
+		printProto();
 		return new Message(baseName);
 	}
 	
 	public CSMessage createCS() {
+		printProto();
 		return new CSMessage(this.msgId + 1, this.msgName);
 	}
 	
 	public CSMessage createCS(String baseName) {
+		printProto();
 		return new CSMessage(this.msgId + 1, baseName);
 	}
 	
 	public SCMessage createSC() {
+		printProto();
 		return new SCMessage(this.msgId + 1, this.baseName);
 	}
 	
 	public SCMessage createSC(String baseName) {
+		printProto();
 		return new SCMessage(this.msgId + 1, baseName);
 	}
 	
 	public SCMessageResult createSCResult() {
+		printProto();
 		return new SCMessageResult(this.msgId + 1, this.baseName);
 	}
 	
 	public SCMessageResult createSCResult(String baseName) {
+		printProto();
 		return new SCMessageResult(this.msgId + 1, baseName);
 	}
 	
@@ -97,38 +108,20 @@ public class Message {
 	}
 	
 	public Message addOptional(Type type, String name, Object ...args) {
-		Field field = Field.make(type, name, ELimitType.OPTIONAL);
+		args = Arrays.copyOf(args, args.length + 1);
+		args[args.length - 1] = ELimitType.OPTIONAL;
 		
-		for (int i=0; i<args.length; ++i) {
-			Object object = args[i];
-			if (object instanceof String) {
-				field.comment((String)object);
-			} else if (object instanceof ELimitType) {
-				field.limitType((ELimitType)object);
-			}
-		}
-		
-		protoFields.add(field);
-		
-		return this;
+		return add(type, name, args);
 	}
 	
 	public Message addRepeated(Type type, String name, Object ...args) {
-		Field field = Field.make(type, name, ELimitType.REPEATED);
-				
-		for (int i=0; i<args.length; ++i) {
-			Object object = args[i];
-			if (object instanceof String) {
-				field.comment((String)object);
-			} else if (object instanceof ELimitType) {
-				field.limitType((ELimitType)object);
-			}
-		}
-
-		return this;
+		args = Arrays.copyOf(args, args.length + 1);
+		args[args.length - 1] = ELimitType.REPEATED;
+		
+		return add(type, name, args);
 	}
 	
-	private String genProto() {
+	private String buildProto() {
 		String outComment = "";
 		
 		if (comment.length() > 0) {
@@ -148,6 +141,16 @@ public class Message {
 		return outComment + outMessage;
 	}
 	
+	private void printProto() {
+		System.out.print(buildProto());
+		
+		for (int i=0; i<endlnCount; ++i) {
+			System.out.print("\n");
+		}
+		
+		endlnCount = 0;
+	}
+	
 	private String genFields(List<Field> protoFields) {
 		String outStrFields = "";
 		
@@ -161,15 +164,9 @@ public class Message {
 		
 		return outStrFields;
 	}
-
-	public Message end() {
-		System.out.print(genProto());
-		return this;
-	}
 	
 	public Message endln() {
-		System.out.print(genProto());
-		System.out.print("\n");
+		++endlnCount;
 		return this;
 	}
 
