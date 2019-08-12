@@ -169,6 +169,10 @@ public class Message {
 		++endlnCount;
 		return this;
 	}
+	
+	public void finish() {
+		printProto();
+	}
 
 	public String getComment() {
 		return comment;

@@ -31,6 +31,18 @@ public class MsgDreamland {
 		.addRepeated(Type.create("DDamageInfo"), "damageInfos")
 		.endln()
 		
+		.createCS("GetDreamLandBossInfo")
+		.comment("获取场景怪物信息")
+		.add(Type.INT, "stageSn")
+		
+		.createSCResult()
+		.add(Type.INT, "stageSn")
+		.add(Type.BOOL, "refresh", "是否刷新")
+		.addOptional(Type.LONG, "waitTime", "等待时间")
+		.addRepeated(Type.create("DBossInfo"), "bossInfos")
+		.endln()
+		
+		//////////////////////////////////////////
 		// 独立结构，不是协议
 		.create("DLineInfo")
 		.comment("分线数据")
@@ -43,22 +55,36 @@ public class MsgDreamland {
 		.comment("击杀数据")
 		.add(Type.INT, "monsterSn")
 		.add(Type.BOOL, "dead", "怪物是否死亡")
-		.addOptional(Type.LONG, "firstBloodHumanId", "第一击玩家")
-		.addOptional(Type.STRING, "firstBloodHumanName")
-		.addOptional(Type.LONG, "firstBloodDamageValue", "第一击玩家所属工会伤害")
-		.addOptional(Type.LONG, "lastBloodHumanId", "最后一击玩家")
-		.addOptional(Type.STRING, "lasttBloodHumanName")
-		.addOptional(Type.LONG, "lastBloodDamageValue", "最后一击玩家所属工会伤害")
-		.addOptional(Type.STRING, "unionName", "伤害最高的帮派名称")
+		.addOptional(Type.create("DBloodInfo"), "firstBlood")
+		.addOptional(Type.create("DBloodInfo"), "lastBlood")
+		.addOptional(Type.LONG, "maxDamageUnionId")
+		.addOptional(Type.STRING, "maxDamageUnionName")
+		.addOptional(Type.LONG, "fightDuration")
 		.endln()
-		
+
+		.create("DBloodInfo")
+		.comment("第一击和最后一击数据")
+		.add(Type.LONG, "humanId", "玩家")
+		.add(Type.STRING, "humanName")
+		.add(Type.LONG, "unionId", "玩家所属工会")
+		.add(Type.STRING, "unionName")
+		.add(Type.LONG, "damageValue", "工会伤害")
+		.endln()
+
 		.create("DDamageInfo")
 		.comment("伤害数据")
-		.add(Type.INT, "unionId")
+		.add(Type.LONG, "unionId")
 		.add(Type.STRING, "unionName", "最后击杀者帮派名称")
 		.add(Type.LONG, "damage", "伤害")
 		.endln()
 		
+		.create("DBossInfo")
+		.comment("怪物数据")
+		.add(Type.INT, "bossSn")
+		.add(Type.LONG, "hp", "怪物血量")
+		.endln()
+
+		.finish();
 		;
 		
 		regin.endln();

@@ -31,8 +31,13 @@ public class MsgStarUp {
 		.add(Type.INT, "result")
 		.endln()
 		
-		// end
-		;
+		.createSC("UpdateEvilEffect")
+		.comment("更新附魔效果")
+		.add(Type.INT, "suit", "套装")
+		.add(Type.INT, "star", "星级")
+		.endln()
+		
+		.finish();
 		
 		regin.end();
 		
